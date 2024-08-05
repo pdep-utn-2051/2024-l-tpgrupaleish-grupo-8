@@ -69,5 +69,6 @@ cantVida(piquero(sinEscudo, 2), 65).
 cantVida(piquero(sinEscudo, 3), 70).
 cantVida(piquero(escudo, Nivel), VidaPiquero):- cantVida(piquero(sinEscudo, Nivel), VidaSinEscudo), VidaPiquero is VidaSinEscudo + (VidaSinEscudo*0.1).
 
-unidadConMasVida(Jugador, VidaUnidad):- generaListaUnidades(Jugador, ListaUnidades), max_member((cantVida(_),VidaUnidad), ListaUnidades).
-generaListaUnidades(Jugador, ListaUnidades):- findall(Unidades, unidades(Jugador, Unidades), ListaUnidades). 
+unidadConMasVida(Jugador, UnidadConMasVida) :-generaListaUnidades(Jugador, ListaUnidades), max_member(_-UnidadConMasVida, ListaUnidades).
+
+generaListaUnidades(Jugador, ListaUnidades):-findall(Vida-Unidad, (unidades(Jugador, Unidad), cantVida(Unidad, Vida)), ListaUnidades).
