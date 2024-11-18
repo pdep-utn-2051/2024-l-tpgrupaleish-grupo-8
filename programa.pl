@@ -65,7 +65,9 @@ unidades(carola, piquero(escudo, 2)).
 
 % punto 7
 %cantVida(Unidad, Vida)
-cantVida(campeon(Vida), VidaCampeon):- Vida >= 1, Vida =< 100, VidaCampeon is Vida.
+cantVida(campeon(Vida), Vida) :- 
+    Vida >= 1, 
+    Vida =< 100.
 cantVida(jinetes(camello), 80).
 cantVida(jinetes(caballo), 90).
 cantVida(piquero(sinEscudo, 1), 50).
@@ -73,9 +75,9 @@ cantVida(piquero(sinEscudo, 2), 65).
 cantVida(piquero(sinEscudo, 3), 70).
 cantVida(piquero(escudo, Nivel), VidaPiquero):- cantVida(piquero(sinEscudo, Nivel), VidaSinEscudo), VidaPiquero is VidaSinEscudo + (VidaSinEscudo*0.1).
 
-unidadConMasVida(Jugador, UnidadConMasVida) :-generaListaUnidades(Jugador, ListaUnidades), max_member(_-UnidadConMasVida, ListaUnidades).
+unidadConMasVida(Jugador, UnidadConMasVida) :-generaListaUnidades(Jugador, ListaUnidades), max_member((_,UnidadConMasVida), ListaUnidades).
 
-generaListaUnidades(Jugador, ListaUnidades):-findall(Vida-Unidad, (unidades(Jugador, Unidad), cantVida(Unidad, Vida)), ListaUnidades).
+generaListaUnidades(Jugador, ListaUnidades):-findall((Vida, Unidad), (unidades(Jugador, Unidad), cantVida(Unidad, Vida)), ListaUnidades).
 
 % punto 8
 %ventajas("Unidad que gana", "Unidad que pierde")
@@ -84,18 +86,14 @@ ventajas(campeon(_), piquero(_,_)).
 ventajas(piquero(_,_), jinetes(_)).
 ventajas(jinetes(camello),jinetes(caballo)).
 %leGana("Unidad que gana", "Unidad que pierde")
-leGana(Unidad, OtraUnidad):- not(ventajas(Unidad,OtraUnidad)), cantVida(Unidad,Vida1), cantVida(OtraUnidad,Vida2), Vida1 > Vida2.
 leGana(Unidad, OtraUnidad):- ventajas(Unidad,OtraUnidad).
+leGana(Unidad, OtraUnidad):- cantVida(Unidad,Vida1), cantVida(OtraUnidad,Vida2), Vida1 > Vida2.
 
 % punto 9 
-contarPiqueros(Jugador, ConEscudo, SinEscudo) :-
-    findall(piquero(escudo, _), unidades(Jugador, piquero(escudo, _)), PiquerosConEscudo),
-    findall(piquero(sinEscudo, _), unidades(Jugador, piquero(sinEscudo, _)), PiquerosSinEscudo),
-    length(PiquerosConEscudo, ConEscudo),
-    length(PiquerosSinEscudo, SinEscudo).
 
 jugadorSobreviveAsedio(Jugador) :-
-    contarPiqueros(Jugador, ConEscudo, SinEscudo),
+    personajes(Jugador), findall(1,unidades(Jugador,piquero(escudo,_)),ListaConEscudo), findall(1,unidades(Jugador,piquero(sinEscudo,_)),ListaSinEscudo), 
+    length(ListaConEscudo, ConEscudo), length(ListaSinEscudo,SinEscudo),    
     ConEscudo > SinEscudo.
 
 % punto 10.
