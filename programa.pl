@@ -65,9 +65,7 @@ unidades(carola, piquero(escudo, 2)).
 
 % punto 7
 %cantVida(Unidad, Vida)
-cantVida(campeon(Vida), Vida) :- 
-    Vida >= 1, 
-    Vida =< 100.
+cantVida(campeon(Vida), Vida) :- Vida >= 1, Vida =< 100.
 cantVida(jinetes(camello), 80).
 cantVida(jinetes(caballo), 90).
 cantVida(piquero(sinEscudo, 1), 50).
@@ -87,7 +85,7 @@ ventajas(piquero(_,_), jinetes(_)).
 ventajas(jinetes(camello),jinetes(caballo)).
 %leGana("Unidad que gana", "Unidad que pierde")
 leGana(Unidad, OtraUnidad):- ventajas(Unidad,OtraUnidad).
-leGana(Unidad, OtraUnidad):- cantVida(Unidad,Vida1), cantVida(OtraUnidad,Vida2), Vida1 > Vida2.
+leGana(Unidad, OtraUnidad):- ventajas(Unidad,Unidad1), ventajas(Unidad2,OtraUnidad), cantVida(Unidad,Vida1), cantVida(OtraUnidad,Vida2), Vida1 > Vida2, Unidad\=Unidad2, Unidad1\=OtraUnidad.
 
 % punto 9 
 
@@ -97,6 +95,19 @@ jugadorSobreviveAsedio(Jugador) :-
     ConEscudo > SinEscudo.
 
 % punto 10.
-/*puedeDesarrollarTecnologia(Jugador,Tecnologia):- obtieneDependencias(Tecnologia,ListaDeDependiencias), jugadorDesarrollo(Jugador,ListaDeDesarrollos), listaContenidaEn(ListaDeDesarrollos,ListaDeDependencias).
 
-*/
+dependeDe(herreria,_).
+dependeDe(forja,herreria).
+dependeDe(fundicion,forja).
+dependeDe(horno,fundicion).
+dependeDe(molino,_).
+dependeDe(collera,molino).
+dependeDe(arado,collera).
+dependeDe(emplumado,herreria).
+dependeDe(punta,emplumado).
+dependeDe(laminas,herreria).
+dependeDe(malla,laminas).
+dependeDe(placas,malla).
+
+
+puedeDesarrollarTecnologia(Jugador,Tecnologia):-personajes(Jugador),dependeDe(Tecnologia,Dependencia),desarrollo(Jugador,Dependencia), not(desarrollo(Jugador, Tecnologia)).
